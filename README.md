@@ -64,12 +64,8 @@ This makes sure the liveness check doesn't solely depend on SSH, increases confi
 
 ### Reboot detection
 
- - Tracks boot timestamp at connection time
- - Compares current vs s
- ### Reboot detection
-
-  - Tracks boot timestamp at connection time
-  - Compares current vs stored boot time with 5 second tolerance
+- Tracks boot timestamp at connection time
+- Compares current vs stored boot time with 5 second tolerance
 
 ### Testing strategy
 
