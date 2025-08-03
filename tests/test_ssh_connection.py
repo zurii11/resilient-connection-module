@@ -118,8 +118,9 @@ def test_unexpected_reboot(ssh):
     ssh.client = MagicMock()
     ssh.boot_time = 1000000
 
-    with pytest.raises(UnexpectedRebootDetected):
-        ssh.check_for_reboot(1000009)
+    with patch.object(SSHConnection, "get_boot_time", return_value=1000009):
+        with pytest.raises(UnexpectedRebootDetected):
+            ssh.check_for_reboot()
 
 def test_ping_host_success(ssh):
     with patch("subprocess.run") as mock_run:

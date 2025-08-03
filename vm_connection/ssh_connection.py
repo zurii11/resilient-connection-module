@@ -96,7 +96,6 @@ class SSHConnection:
 
     def is_alive(self) -> bool:
         try:
-            boot_time = self.get_boot_time()
             self.check_for_reboot(boot_time)
 
             return True
@@ -110,13 +109,19 @@ class SSHConnection:
 
         raise ConnectionFailed("Machine is not reachable via SSH or ping.")
 
-    def check_for_reboot(self, boot_time: float):
-        if self.boot_time and abs(boot_time - self.boot_time) > 5:
-            self.boot_time = boot_time
+    def check_for_reboot(self) -> bool:
+        current_boot_time = self.get_boot_time()
+
+        if self.boot_time and abs(current_boot_time - self.boot_time) > 5:
+            self.boot_time = current_boot_time
             raise UnexpectedRebootDetected("Detected unexpected reboot.")
+            return True
 
         if self.boot_time is None:
-            self.boot_time = boot_time
+            self.boot_time = current_boot_time
+            return False
+
+        return False
 
     def ping_host(self, count: int = 1, timeout: int = 2) -> bool:
         try:
