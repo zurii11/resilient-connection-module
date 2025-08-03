@@ -2,7 +2,6 @@ import pytest
 import paramiko
 import socket
 import time
-import queue
 from unittest.mock import patch, MagicMock, call
 
 from vm_connection.ssh_connection import SSHConnection
