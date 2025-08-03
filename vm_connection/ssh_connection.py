@@ -49,8 +49,6 @@ class SSHConnection:
         stdin, stdout, stderr = self.client.exec_command(command)
 
         output_queue = queue.Queue()
-        print(f"Queue object: {output_queue.empty()}")
-        print(f"Stream object: {stdout}")
 
         def stream_reader(stream, stream_name):
             for line in iter(stream.readline(), ''):
@@ -61,19 +59,15 @@ class SSHConnection:
         stderr_thread = threading.Thread(target=stream_reader, args=(stderr, "stderr"))
         stdout_thread.start()
         stderr_thread.start()
-        print(f"Queue object: {output_queue.empty()}")
 
         start_time = time.time()
-        print(f"Start time is {start_time}")
         stdout_done = stderr_done = False
 
         try:
             while not (stdout_done and stderr_done):
                 try:
                     stream_name, line = output_queue.get(timeout=1)
-                    print(f"Queue line: {line}")
                 except queue.Empty:
-                    print(f"Queue empty, time is {time.time()}")
                     if time.time() - start_time >= timeout:
                         raise CommandTimeout(f"Command {command} timed out after {timeout} seconds.")
                     continue
@@ -91,7 +85,6 @@ class SSHConnection:
             stdout_thread.join(timeout=2)
             stderr_thread.join(timeout=2)
 
-        print(f"Exit status: {stdout.channel.recv_exit_status()}")
         return stdout.channel.recv_exit_status()
 
     def is_alive(self) -> bool:

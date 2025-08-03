@@ -18,14 +18,10 @@ class FakeThread:
         self._args = args
         self._kwargs = kwargs or {}
         self._should_hang = should_hang
-        print(f"recieved should hang: {should_hang}")
 
     def start(self):
         if not self._should_hang:
             self._target(*self._args, **self._kwargs)
-            print("Doing target")
-        else:
-            print("Doing nothing")
 
     def join(self, timeout=None):
         pass
